@@ -14,30 +14,34 @@ namespace Porky
             int startPort = 0; 
             int endPort = 0;
             bool scanAllPorts = false;
+            bool tcpCommonPorts = false;
 
-            // need to grab arguments to then call the port scanner
-            for (int i = 0; i < args.Length; i++)
+            Classes.Porky pork = new Classes.Porky();
+
+            for (int i = 0; i < args.Length; i++) //Collecting parameters
             {
                 switch (args[i])
                 {
                     case "-ip":
-                        target = args[i]; break; //need to fix arguments
+                        target = args[++i]; break;
                     case "-p":
                         string[] ports = args[++i].Split('-');
                         startPort = int.Parse(ports[0]);
                         endPort = ports.Length > 1 ? int.Parse(ports[1]) : startPort; break;
                     case "-all":
                         scanAllPorts = true; break;
+                    case "-tcp":
+                        tcpCommonPorts = true; break;
                 }
             }
            
-            if (String.IsNullOrEmpty(target))
+            if (String.IsNullOrEmpty(target)) // Requesting parameters
             {
                 Console.Write("Please Enter Ip or Hostname: ");
                 target = Console.ReadLine();
             }
 
-            if (!scanAllPorts)
+            if (!scanAllPorts && !tcpCommonPorts)
             {
                 if (startPort == 0 || endPort == 0)
                 {
@@ -52,14 +56,17 @@ namespace Porky
             {
                 startPort = 1;
                 endPort = 65535;
+                
             }
 
-            Classes.Porky pork = new Classes.Porky();
+
+            if (tcpCommonPorts == true)
+            {
+                //need to call pork for TCP common port enumneration. 
+            }
 
             await pork.Sizzle(target, startPort, endPort);
-            
-            // might need to create identifyservice class to handle that function. 
-            Console.WriteLine("Hello, World!");
+            // might need to create identifyservice class to handle that function.
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Porky.Classes
 {
-    public class Porky
+    public class Porky //TODO: need to setup the scan common tcp function. 
     {
         public Porky() {}
 
@@ -43,7 +43,7 @@ namespace Porky.Classes
                     {
                         Console.WriteLine($"[+] Open (TCP): {port}");
                         openPorts.Add(port);
-                        await GrabbingBannerTcpAsync(client, port);
+                        //await GrabbingBannerTcpAsync(client, port); Not working 
                     }
                 }
                 catch(Exception) { }
@@ -55,16 +55,25 @@ namespace Porky.Classes
             try 
             {
                 NetworkStream stream = client.GetStream();
-                byte[] buffer = new byte[1024];
-                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                string banner = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-
-                if (!string.IsNullOrWhiteSpace(banner))
+                if (stream.CanRead) 
                 {
-                    Console.WriteLine($"Banner (TCP) {port}: {banner.Trim()}");
+                    byte[] buffer = new byte[1024];
+                    await stream.WriteAsync(Encoding.ASCII.GetBytes("\r\n"));
+                    await Task.Delay(200);
+                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    string banner = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+
+                    if (!string.IsNullOrWhiteSpace(banner))
+                    {
+                        Console.WriteLine($" Banner (TCP) {port}: {banner.Trim()}");
+                    }
                 }
+               
             }
-            catch(Exception) { }
+            catch(Exception ex) 
+            {
+                Console.WriteLine($" Banner (TCP {port}): {ex.Message}");
+            }
         }
     }
 }
