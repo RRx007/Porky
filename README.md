@@ -1,7 +1,7 @@
 # Porky
 ## The C# Port Scanner
 
-This a simple Port Scanner in C# using a Porky class Created. 
+This a simple Port Scanner in C# using a Porky class. 
 
 #### Usage: 
 - ./Porky -ip 127.0.0.1 -start 0 -end 1000
