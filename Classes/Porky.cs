@@ -32,6 +32,42 @@ namespace Porky.Classes
             }
         }
 
+        public async Task SizzleTcp(string target)
+        {
+            List<int> openports = new List<int>();
+            List<Task> tasks = new List<Task>();
+            Dictionary<int,string> commonTcpPorts = new Dictionary<int, string> 
+            {
+                {21, "FTP" },
+                {22, "SSH" },
+                {23, "Telnet" },
+                {25, "SMTP" },
+                {53, "DNS" },
+                {80, "HTTP" },
+                {443, "HTTPS" },
+                {445 , "SMB" },
+                {1433, "MSSQL" },
+                {3306, "MySQL" },
+                {3389, "RDP" },
+                {8080, "HTTP Proxy," },
+            };
+
+            Console.WriteLine($"Scanning {target} for Common TCP ports");   
+            foreach (var TcpPorts in commonTcpPorts.Keys) 
+            { 
+                tasks.Add(ScanTcpAsync(target, TcpPorts, openports));
+            }
+
+            await Task.WhenAll(tasks);
+
+            Console.WriteLine("\nScan complete! Open ports: ");
+
+            foreach (var port in openports)
+            {
+                Console.WriteLine($"Port {port} - .....");
+            }
+        }
+
         public async Task ScanTcpAsync(string host, int port, List<int> openPorts) 
         {
             using (TcpClient client = new TcpClient())

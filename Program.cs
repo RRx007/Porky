@@ -8,8 +8,7 @@ namespace Porky
     {
         ///dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o output
         static async Task Main(string[] args)
-        {
-            // need to set global variables 
+        { 
             string target = "";
             int startPort = 0; 
             int endPort = 0;
@@ -62,10 +61,13 @@ namespace Porky
 
             if (tcpCommonPorts == true)
             {
-                //need to call pork for TCP common port enumneration. 
+                await pork.SizzleTcp(target);
             }
-
-            await pork.Sizzle(target, startPort, endPort);
+            else
+            {
+                await pork.Sizzle(target, startPort, endPort);
+            }
+           
             // might need to create identifyservice class to handle that function.
         }
     }
